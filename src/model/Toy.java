@@ -7,58 +7,54 @@ import java.util.Random;
 import static java.lang.System.currentTimeMillis;
 
 public class Toy {
-    private final int toyID;
-    private final String toyName;
-    private int toyWeight;
-    private final int toyUniqueNumber;
+    private String toyType;
+    private String toyName;
 
-    public Toy(int toyID, String toyName, int toyWeight) {
-        this.toyID = toyID;
+    public Toy(String toyType, String toyName) {
+        this.toyType = toyType;
         this.toyName = toyName;
-        this.toyWeight = toyWeight;
-        this.toyUniqueNumber = assignUniqueNumber();
     }
-    private int assignUniqueNumber () {
-        final int countBase = 331;
-        Random random = new Random();
-        int result =
-        int result = toyID*countBase;
-        result = (int) (result*countBase + currentTimeMillis()%Integer.MAX_VALUE);
-        result = (result*countBase + toyName.hashCode())>>>1;
-        return result;
-    }
-    public int getToyID() {
-        return toyID;
+//    private int assignUniqueNumber () {
+//        final int countBase = 331;
+//        Random random = new Random();
+//        int result =
+//        int result = toyID*countBase;
+//        result = (int) (result*countBase + currentTimeMillis()%Integer.MAX_VALUE);
+//        result = (result*countBase + toyName.hashCode())>>>1;
+//        return result;
+//    }
+    public String getToyType() {
+        return toyType;
     }
 
     public String getToyName() {
         return toyName;
     }
 
-    public int getToyWeight() {
-        return toyWeight;
-    }
 
-    public void setToyWeight(int toyWeight) {
-        this.toyWeight = toyWeight;
+    public void setToyType (String toyType) {
+        this.toyType = toyType;
+    }
+    public void setToyName (String toyType) {
+        this.toyName = toyName;
     }
     // Игрушки считаются равными, если у них одинаковые ID
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Toy toy)) return false;
-        return getToyID() == toy.getToyID();
+        return getToyType().equals(((Toy)o).getToyType()) && getToyName().equals(((Toy)o).getToyName());
     }
     @Override
     public int hashCode() {
         int result = 19;
         final int hashBase = 31;
 
-        result = result* hashBase + toyID;
-        result = result* hashBase + toyUniqueNumber;
+        result = result* hashBase + toyType.hashCode();
+        result = result* hashBase + toyName.hashCode();
         return result>>>3;
     }
     public String toString() {
-        return String.format("ИГРУШКА %10d: ID = %5d, NAME = %-50s, WEIGHT= %5d", toyUniqueNumber, toyID, toyName, toyWeight);
+        return String.format("ИГРУШКА <Тип = %-20s, Название = %-50s>", toyType, toyName);
     }
 }
