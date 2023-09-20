@@ -15,8 +15,14 @@ public class NomenclatureItem {
     public NomenclatureItem(int itemID, Toy toy) {
         this.itemID = itemID;
         this.toy = toy;
-        this.quantity = 1;
-        this.price = 1;
+        this.quantity = 0;
+        this.price = 0;
+    }
+    public NomenclatureItem(Toy toy) {
+        this.itemID = 0;
+        this.toy = toy;
+        this.quantity = 0;
+        this.price = 0;
     }
 
     public int getItemID() {
