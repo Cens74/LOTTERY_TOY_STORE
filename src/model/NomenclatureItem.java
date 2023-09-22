@@ -1,5 +1,8 @@
 package model;
 
+import exceptions.WrongDataFormatException;
+import utils.Tuner;
+
 public class NomenclatureItem {
     private int itemID;
     private Toy toy;
@@ -25,6 +28,29 @@ public class NomenclatureItem {
         this.price = 0;
     }
 
+    /**
+     * Конструктор номенклатурной единицы по строке специального формата, содержащей через пробел информацию о единице товара:
+
+     * toyID - идентификатор игрушки (целое положительное число)
+     * toyType - заключенная в угловые скобки строка из русских букв, пробелов, точек, запятых, дефисов, двойных кавычек, круглых скобок
+     * toyName - заключенная в угловые скобки строка из русских букв, пробелов, точек, запятых, дефисов, двойных кавычек, круглых скобок и цифр
+     * Quantity - количество номенклатурных единиц данного вида в магазине, положительное целое число
+     * Price - цена: double с двумя знаками после точки или запятой, или без дробной части
+     * @param nomenclatureFields
+     */
+    public NomenclatureItem (String[] nomenclatureFields) throws WrongDataFormatException {
+            Tuner tuner = new Tuner();
+            int toyID = 0;
+            Toy toy;
+            if (tuner.isID(nomenclatureFields[0])) toyID = Integer.parseInt(nomenclatureFields[0]);
+            if (tuner.isTypeOfToy(nomenclatureFields[1]) && tuner.isNameOfToy(nomenclatureFields[2])) {
+                toy = new Toy(toyID, nomenclatureFields[1], nomenclatureFields[2]);
+            }
+
+        } catch NumberFormatException {
+
+        }
+    }
     public int getItemID() {
         return itemID;
     }

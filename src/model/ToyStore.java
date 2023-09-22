@@ -1,19 +1,57 @@
 package model;
 
+import exceptions.ErrorWhileReadingTheFileException;
+import exceptions.WrongDataFormatException;
+import exceptions.WrongPathToFileException;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
+/**
+ * Класс ToyStore моделирует магазин игрушек.
+ * Каждая номенклатурная единица имеет свой ID и содержит игрушку, ее количество в магазине и цену.
+ * Игрушка, в свою очередь - это ID игрушки, Тип (машинка, кукла, конструктор, настольная игра..) и Название (в кавычках)
+ * ID номенклатурным единицам присваивается автоматически, по мере наполнения номенклатурного справочника, начиная с 1.
+ *
+ */
 public class ToyStore {
-    private int lastID;
+    private int lastID; // самый старший использованный идентификатор
     private final List<NomenclatureItem> toysAssortment; // список товарной номенклатуры
-    private Queue<Integer> freedIDQueue; // список освободившихся ID (товар выведен из номенклатуры)
+    private Queue<Integer> freedIDQueue; // очередь из освободившихся ID (товар выведен из номенклатуры)
 
     public ToyStore() {
         this.lastID = 0;
         this.toysAssortment = new ArrayList<>();
         this.freedIDQueue = new PriorityQueue<>();
+    }
+    public ToyStore (Path path) throws IOException, WrongDataFormatException {
+        lastID = 0;
+        toysAssortment = new ArrayList<>();
+        freedIDQueue = new PriorityQueue<>();
+        String temp;
+        BufferedReader in;
+        try {
+            in = Files.newBufferedReader(path);
+        } catch (IOException e) {
+            throw new WrongPathToFileException("НЕКОРРЕКТНЫЙ ПУТЬ К ФАЙЛУ С НОМЕНКЛАТУРОЙ МАГАЗИНА");
+        }
+        while (true) {
+            try {
+                temp = in.readLine();
+            } catch (IOException e) {
+                throw new ErrorWhileReadingTheFileException("НЕКОРРЕКТНЫЙ ПУТЬ К ФАЙЛУ С НОМЕНКЛАТУРОЙ МАГАЗИНА");
+            }
+            if (temp == null) break;
+            String[] nomenclatureFields = temp.split(" ");
+            lastID++;
+            toysAssortment.add(lastID, new NomenclatureItem(nomenclatureFields));
+
+        }
     }
 
     /**
