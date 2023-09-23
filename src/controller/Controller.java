@@ -11,6 +11,7 @@ import utils.Tuner;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
 import java.util.Scanner;
 
 public class Controller {
@@ -32,24 +33,26 @@ public class Controller {
         this.viewer = viewer;
     }
 
-    public void run() throws WrongPathToFileException {
+    public void run() throws IOException {
         String message = "НАЧИНАЕМ ПОДГОТОВКУ К РОЗЫГРЫШУ В МАГАЗИНЕ ИГРУШЕК...";
         viewer.infoMessage(message);
         message = "НАЧИНАЕМ ПОДГОТОВКУ К РОЗЫГРЫШУ В МАГАЗИНЕ ИГРУШЕК...";
 //        Toy toy = new Toy("1 Машинка Вольво-615");
 //        System.out.println(toy.toString());
-        message = "СКОЛЬКО ДЕТЕЙ БУДЕТ УЧАСТВОВАТЬ В РОЗЫГРЫШЕ? ";
-        viewer.promptMessage(message);
-        Scanner scanner = new Scanner(System.in);
+        viewer.infoMessage("СКОЛЬКО ДЕТЕЙ БУДЕТ УЧАСТВОВАТЬ В РОЗЫГРЫШЕ? ");
+        message = "ВВЕДИТЕ ЦЕЛОЕ ПОЛОЖИТЕЛЬНОЕ ЧИСЛО ";
+//        viewer.promptMessage(message);
+//        Scanner scanner = new Scanner(System.in);
         int numberOfParticipants = 0;
         int i;
+        String input;
         for (i = 0; i < QTY_OF_ATTEMPTS; i++) {
-            if (scanner.hasNextInt()) {
-                numberOfParticipants = scanner.nextInt();
-                break;
-            } else {
-                message = "ВВЕДИТЕ ЦЕЛОЕ ПОЛОЖИТЕЛЬНОЕ ЧИСЛО";
-                viewer.promptMessage(message);
+            input = viewer.getUserInput(message);
+            try {
+                numberOfParticipants = Integer.parseInt(input);
+                i = QTY_OF_ATTEMPTS+1;
+            } catch (NumberFormatException e) {
+                if (i < QTY_OF_ATTEMPTS-1) System.out.printf("%d-я попытка: \n", i+2);
             }
         }
         if (i == QTY_OF_ATTEMPTS) throw new WrongInputDataException("ОШИБКА ВВОДА. ПРОГРАММА ЗАВЕРШАЕТ СВОЮ РАБОТУ...");
@@ -77,7 +80,8 @@ public class Controller {
         }
         String fullFileName = String.format("%s\\%s", path, fileName);
         System.out.printf("Полное имя файла с номенклатурой магазина игрушек = %s\n", fullFileName);
-
+        ToyStore store = new ToyStore(Path.of(new File(fullFileName).getCanonicalPath()));
+        store.print();
 
 //        String fullFileName = viewer.getUserInput(message);
 //        String fileNAme =

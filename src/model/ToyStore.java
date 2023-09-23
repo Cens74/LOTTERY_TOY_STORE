@@ -7,10 +7,7 @@ import exceptions.WrongPathToFileException;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * Класс ToyStore моделирует магазин игрушек.
@@ -29,31 +26,48 @@ public class ToyStore {
         this.toysAssortment = new ArrayList<>();
         this.freedIDQueue = new PriorityQueue<>();
     }
-    public ToyStore (Path path) throws IOException, WrongDataFormatException {
+
+    /**
+     * Конструктор создает магазин игрушек по данным из файла, в котором перечислены игрушки, их количество и цены.
+     * 0. toyID - идентификатор игрушки (целое положительное число)
+     * 1. toyType - заключенная в угловые скобки строка из русских букв, пробелов, точек, запятых, дефисов, двойных кавычек, круглых скобок
+     * 2. toyName - заключенная в угловые скобки строка из русских букв, пробелов, точек, запятых, дефисов, двойных кавычек, круглых скобок и цифр
+     * 3. Quantity - количество номенклатурных единиц данного вида в магазине, положительное целое число
+     * 4. Price - цена: double с двумя знаками после точки или запятой, или без дробной части
+     *
+     * @param fullFileName
+     * @throws IOException
+     * @throws WrongDataFormatException
+     */
+    public ToyStore(Path fullFileName) throws IOException, WrongDataFormatException {
         lastID = 0;
         toysAssortment = new ArrayList<>();
         freedIDQueue = new PriorityQueue<>();
         String temp;
-        BufferedReader in;
-        try {
-            in = Files.newBufferedReader(path);
-        } catch (IOException e) {
+        String[] nomenclatureFields;
+        File file = new File(fullFileName.toString());
+        try (FileReader fr = new FileReader(file); BufferedReader in = new BufferedReader(fr)) {
+                NomenclatureItem newItem;
+                temp = in.readLine();
+                while (temp != null) {
+                    System.out.println(temp);
+                    if (temp == null) break;
+                    nomenclatureFields = temp.split(" ");
+                    System.out.println("\u001B[36m"+ "nomenclatureFields = "+Arrays.toString(nomenclatureFields)+ "\u001B[0m");
+                    lastID++;
+                    System.out.printf("lastID = %d\n", lastID);
+                    newItem = new NomenclatureItem(lastID, nomenclatureFields);
+                    System.out.println(String.format("New Nomenclature item # %d", lastID)+"\u001B[31m" + newItem.toString() + "\u001B[0m");
+                    toysAssortment.add(newItem);
+                    System.out.println(Arrays.toString(toysAssortment.toArray()));
+                    temp = in.readLine();
+                    System.out.println("\u001B[32m"+temp+"\u001B[0m");
+                }
+            } catch (FileNotFoundException e) {
             throw new WrongPathToFileException("НЕКОРРЕКТНЫЙ ПУТЬ К ФАЙЛУ С НОМЕНКЛАТУРОЙ МАГАЗИНА");
         }
-        while (true) {
-            try {
-                temp = in.readLine();
-            } catch (IOException e) {
-                throw new ErrorWhileReadingTheFileException("НЕКОРРЕКТНЫЙ ПУТЬ К ФАЙЛУ С НОМЕНКЛАТУРОЙ МАГАЗИНА");
-            }
-            if (temp == null) break;
-            String[] nomenclatureFields = temp.split(" ");
-            lastID++;
-            toysAssortment.add(lastID, new NomenclatureItem(nomenclatureFields));
-
-        }
+        System.out.println(String.format("В магазине %d разновидностей игрушек.", lastID));
     }
-
     /**
      * Функция возвращает 0, если игрушка отсутствует в номенклатурном справочнике,
      * и ID номенклатуры, если присутствует.
@@ -84,8 +98,7 @@ public class ToyStore {
         int ind = id-1;
         NomenclatureItem newItem = null;
         if (id > 0) {                                           // Такая игрушка уже есть в номенклатуре
-            newItem = new NomenclatureItem(toy);
-            newItem.setItemID(id);
+            newItem = new NomenclatureItem(id, toy);
             int newQty = qty+toysAssortment.get(ind).getQuantity();
             double newPrice = (toysAssortment.get(ind).getPrice()*toysAssortment.get(ind).getQuantity() +
                     price*qty)/newQty;
@@ -130,9 +143,10 @@ public class ToyStore {
             }
         }
     }
+    /***************************************************/
     public int addToyToAssortment (Toy toy) {
-        NomenclatureItem item = new NomenclatureItem(toy);
         Integer itemID = 0;
+        NomenclatureItem item = new NomenclatureItem(itemID, toy);
         if (!freedIDQueue.isEmpty()) {
             itemID = freedIDQueue.poll();
         } else {
@@ -146,7 +160,7 @@ public class ToyStore {
      * Метод вывода в консоль всей номенклатуры магазина игрушек
      */
     public void print() {
-        System.out.println("\u001B[33m"+"АССОРТИМЕНТ МАГАЗИНА ИГРУШЕК: "+"\u001B[0m");
+        System.out.println("\n\u001B[33m"+"АССОРТИМЕНТ МАГАЗИНА ИГРУШЕК: "+"\u001B[0m");
         for (NomenclatureItem item: toysAssortment) {
             if (item!=null) System.out.println(item.toString());
         }
