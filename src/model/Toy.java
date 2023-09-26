@@ -15,6 +15,11 @@ public class Toy {
     private String toyType;
     private String toyName;
 
+    public Toy() {
+        this.toyID = 0;
+        this.toyType = "";
+        this.toyName = "";
+    }
     public Toy(int toyID, String toyType, String toyName) {
         this.toyID = toyID;
         this.toyType = toyType;

@@ -1,5 +1,9 @@
 package view;
 
+import exceptions.WrongInputDataException;
+import model.Lot;
+
+import java.util.Map;
 import java.util.Scanner;
 
 public class Viewer {
@@ -24,4 +28,23 @@ public class Viewer {
         Scanner in = new Scanner(System.in);
         return in.nextLine();
     }
+
+    public int getPositiveInteger(int qtyOfAttempts) {
+        int i, result = 0;
+        String input;
+        for (i = 0; i < qtyOfAttempts; i++) {
+            input = getUserInput("ВВЕДИТЕ ЦЕЛОЕ ПОЛОЖИТЕЛЬНОЕ ЧИСЛО ");
+            try {
+                result = Integer.parseInt(input);
+                i = qtyOfAttempts + 1;
+            } catch (NumberFormatException e) {
+                if (i < qtyOfAttempts - 1) System.out.printf("%d-я попытка: \n", i + 2);
+            }
+        }
+        if (i == qtyOfAttempts || result <= 0) throw new WrongInputDataException("ВЫ НЕ СПРАВИЛИСЬ С ВВОДОМ ЦЕЛОГО ПОЛОЖИТЕЛЬНОГО"+
+                "ЧИСЛА\n. ПРОГРАММА ЗАВЕРШАЕТ СВОЮ РАБОТУ...");
+        return result;
+    }
+
+
 }

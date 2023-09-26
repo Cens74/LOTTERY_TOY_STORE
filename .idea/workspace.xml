@@ -8,10 +8,12 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/controller/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/NomenclatureItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/NomenclatureItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/Lot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Lot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/Lottery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Lottery.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/Toy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Toy.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model/ToyStore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/ToyStore.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utils/Tuner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/Tuner.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/toyStore.txt" beforeDir="false" afterPath="$PROJECT_DIR$/toyStore.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/view/Viewer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/view/Viewer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,13 +39,13 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "C:/Users/Татьяна Калашникова/CODE/JAVA/OOP/IH_HOMEWORK3"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Татьяна Калашникова/CODE/JAVA/HOMEWORKS/src/homework6&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />

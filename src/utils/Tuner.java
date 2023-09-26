@@ -1,7 +1,9 @@
 package utils;
 
 import exceptions.WrongDataFormatException;
+import exceptions.WrongInputDataException;
 import exceptions.WrongPathToFileException;
+import model.Lot;
 
 public class Tuner {
     public static final String ANSI_RESET = "\u001B[0m";
@@ -60,24 +62,48 @@ public class Tuner {
         }
         return result;
     }
-    public int parseWeight (String str) throws WrongDataFormatException {
+    public int parseWeight (String str) throws WrongDataFormatException, WrongInputDataException {
         int result = 0;
         if (str.matches("^[0-9]*$")) {
             result = Integer.parseInt(str);
-            return result;
+            if (result > 0) return result;
+            else throw new WrongInputDataException("ВЕС ДОЛЖЕН БЫТЬ ЦЕЛЫМ И НЕНУЛЕВЫМ");
         } else {
             // введенная строка содержит символы, которых не может быть в целом числе
             throw new WrongDataFormatException(String.format("НЕВЕРНЫЙ ФОРМАТ ДАННЫХ (ВЕС НОМЕНЛАТУРНОЙ ЕДИНИЦЫ)!!!"));
         }
     }
-    public int parseQty (String str) throws WrongDataFormatException {
+    public int parseQty (String str) throws WrongDataFormatException, WrongInputDataException {
         int result = 0;
         if (str.matches("^[0-9]*$")) {
             result = Integer.parseInt(str);
-            return result;
+            if (result > 0) return result;
+            else throw new WrongInputDataException("КОЛИЧЕСТВО НЕ МОЖЕТ БЫТЬ НУЛЕВЫМ");
         } else {
             // введенная строка содержит символы, которых не может быть в целом числе
-            throw new WrongDataFormatException(String.format("НЕВЕРНЫЙ ФОРМАТ ДАННЫХ (ВЕС НОМЕНЛАТУРНОЙ ЕДИНИЦЫ)!!!"));
+            throw new WrongDataFormatException(String.format("НЕВЕРНЫЙ ФОРМАТ ДАННЫХ (ID НОМЕНЛАТУРНОЙ ЕДИНИЦЫ)!!!"));
         }
+    }
+    public int parseID (String str) throws WrongDataFormatException {
+        int result = 0;
+        if (str.matches("^[0-9]*$")) {
+            result = Integer.parseInt(str);
+            if (result > 0) return result;
+            else throw new WrongInputDataException("ИДЕНТИФИКАТОР ДОЛЖЕН БЫТЬ ЦЕЛЫМ И НЕНУЛЕВЫМ");
+        } else {
+            // введенная строка содержит символы, которых не может быть в целом числе
+            throw new WrongDataFormatException(String.format("НЕВЕРНЫЙ ФОРМАТ ДАННЫХ (ID НОМЕНЛАТУРНОЙ ЕДИНИЦЫ)!!!"));
+        }
+    }
+
+    public Lot parseLot (String str) throws WrongDataFormatException {
+        Lot result = new Lot();
+        String tempString = str.strip();
+        String[] fields;
+        fields = tempString.split(" ");
+        if (fields.length != 2) throw new WrongDataFormatException("НЕВЕРНЫЙ ФОРМАТ ЛОТА!!! ОШИБКА ВВОДА ДАННЫХ. ПРОГРАММА ЗАВЕРШАЕТ РАБОТУ.");
+        result.setItem(parseID(fields[0]));
+        result.setWeight(parseID(fields[1]));
+        return result;
     }
 }

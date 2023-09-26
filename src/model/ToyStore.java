@@ -27,6 +27,10 @@ public class ToyStore {
         this.freedIDQueue = new PriorityQueue<>();
     }
 
+    public List<NomenclatureItem> getToysAssortment() {
+        return toysAssortment;
+    }
+
     /**
      * Конструктор создает магазин игрушек по данным из файла, в котором перечислены игрушки, их количество и цены.
      * 0. toyID - идентификатор игрушки (целое положительное число)
@@ -80,6 +84,30 @@ public class ToyStore {
         for (NomenclatureItem elem: toysAssortment) {
             if (elem.getToy().equals(toy)) {
                 result = elem.getItemID();
+                break;
+            }
+        }
+        return result;
+    }
+    public int getToyQtyInStore (Toy toy) {
+        int toyInd = this.getNomenclatureID(toy);
+        return toysAssortment.get(toyInd).getQuantity();
+    }
+    public int getNomenclatureQtyInStore (int nomID) {
+        int result = 0;
+        for (NomenclatureItem elem: toysAssortment) {
+            if (elem.getItemID() == nomID) {
+                result = elem.getQuantity();
+                break;
+            }
+        }
+        return result;
+    }
+    public Toy getToyByNomenclatureID (int nomID) {
+        Toy result = new Toy();
+        for (NomenclatureItem elem: toysAssortment) {
+            if (elem.getItemID() == nomID) {
+                result = elem.getToy();
                 break;
             }
         }

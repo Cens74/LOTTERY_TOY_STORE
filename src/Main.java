@@ -1,6 +1,7 @@
 import controller.Controller;
 import exceptions.WrongPathToFileException;
 import model.Toy;
+import utils.Tuner;
 import view.Viewer;
 
 import java.io.IOException;
@@ -9,7 +10,8 @@ public class Main {
 
     public static void main(String[] args) {
         Viewer viewer = new Viewer();
-        Controller controller = new Controller(viewer);
+        Tuner tuner = new Tuner();
+        Controller controller = new Controller(viewer, tuner);
         try {
             controller.run();
         } catch (WrongPathToFileException e) {

@@ -1,33 +1,58 @@
 package model;
 
 import exceptions.DuplicatedLotException;
+import exceptions.WrongInputDataException;
 
 import java.io.*;
 import java.util.*;
 
 public class Lottery {
-    public int lotsQty;                            // количество лотов
+    private ToyStore store;                         // Магазин, в котором разыгрывается лотерея
+//    public int lotsQty;                            // количество лотов
     private int qtyOfParticipants;                 // количество участников лотереи (минимальное возможное количество призов)
-    private int qtyOfPrizes;                       // количество призов
-    private final int FACTOR = 3;                   // Во сколько раз призов должно быть больше числа участников
-    private Map<Integer,Lot> lots;                 // лоты, участвующие в лотерее: <Номер лот>
-    private int[] lotsQuantities;                  // количества лотов, участвующих в розыгрыше
+    private Integer qtyOfPrizes;                       // количество призов
+//    private final int FACTOR = 3;                // Во сколько раз призов должно быть больше числа участников
+    private Map<Integer,Lot> lots;                 // лоты, участвующие в лотерее: <ID лота> <Лот>
+    private Map<Integer, Integer> lotsQuantities;  // количества лотов, требуемые для розыгрыша: <ID лота> <Кол-во>
     private PriorityQueue<Toy> prizes;             // очередь призов для выдачи участникам
-    public Lottery(LinkedList<Lot> lotsList, int partQty) {
-        this.lots = new HashMap<>();
-        this.qtyOfParticipants = partQty;
-        this.qtyOfPrizes = partQty*FACTOR;
-        int id = 0;
-        for (Lot elem: lotsList) {
-            if (!lotsSetContainsNomenclatureItem (lots, elem.getItem())) {
-                lots.put(id, elem);
-                id++;
-            } else throw new DuplicatedLotException(elem.getItem().getToy().getToyName());
+    public Lottery(ToyStore store, Map<Integer,Lot> lots, int participantsQty, int prizesQty) {
+        this.store = store;
+        this.lots = lots;
+        this.qtyOfParticipants = participantsQty;
+        this.qtyOfPrizes = prizesQty;
+        
+        this.lotsQuantities = new HashMap<>();
+        printLots();
+        Integer weightsSum = 0;
+        for (Map.Entry<Integer, Lot> entry : lots.entrySet()) {
+            weightsSum += entry.getValue().getWeight();
+            lotsQuantities.put(entry.getKey(), 0);
         }
-        lotsQty = lots.size();
-        lotsQuantities = new int[id]; 
-        prizes = new PriorityQueue<Toy>();
+        int i = 1;
+        int newQty;
+        int summedQty = 0;
+        Lot lot = new Lot();
+        for (i = 1; i < lots.size(); i++) {
+            lot = lots.get(i);
+            newQty = (int)Math.round(lot.getWeight()/weightsSum*qtyOfPrizes);
+//            if (newQty == 0) ...
+            if (newQty > store.getNomenclatureQtyInStore(lot.getItem())) {
+                throw new WrongInputDataException(String.format("В магазине недостаточно игрушек: \n"+
+                        " %s\n" +"для организации лотереи по Вашим параметрам",
+                        store.getToyByNomenclatureID(lot.getItem()).toString()));
+            };
+            summedQty += newQty;
+            lotsQuantities.put(i, newQty);
+        }
+        lotsQuantities.put(i, qtyOfPrizes-summedQty);
+        this.prizes = createQueueOfPrizes();
+//        createQueueOfPrizes();
+        int num = 1;
+        for (Toy elem : prizes) {
+            System.out.println(num + elem.toString());
+        }
     }
+
 //    public Lottery(int partQty) {
 //        this.lots = new HashMap<>();
 //        this.qtyOfParticipants = partQty;
@@ -79,7 +104,7 @@ public class Lottery {
      */
     private boolean lotsSetContainsNomenclatureItem (Map<Integer,Lot> lots, NomenclatureItem item) {
         for (Map.Entry<Integer, Lot> entry : lots.entrySet()) {
-            if (entry.getValue().getItem().getItemID() == item.getItemID()) return true;
+            if (entry.getValue().getItem() == item.getItemID()) return true;
         }
         return false;
     }
@@ -93,7 +118,7 @@ public class Lottery {
      */
     private int NomenclatureItemIDinTheLotsSet (Map<Integer,Lot> lots, NomenclatureItem item) {
         for (Map.Entry<Integer, Lot> entry : lots.entrySet()) {
-            if (entry.getValue().getItem().getItemID() == item.getItemID()) return entry.getKey();
+            if (entry.getValue().getItem() == item.getItemID()) return entry.getKey();
         }
         return 0;
     }
@@ -102,35 +127,41 @@ public class Lottery {
      * Метод для каждого лота вычисляет число его представителей, требующееся для участия в лотерее,
      * чтобы были соблюдены требования к "весу" лотов-участников
      */
-    private void calculateLotsQuantities () {
+    private void calculateLotsQuantities() {
         int sumOfWeights = 0;
         for (Map.Entry<Integer, Lot> entry : lots.entrySet()) {
             sumOfWeights += entry.getValue().getWeight();
         }
         for (Map.Entry<Integer, Lot> entry : lots.entrySet()) {
-            this.lotsQuantities[entry.getKey()] = Math.round(entry.getValue().getWeight()*qtyOfPrizes/sumOfWeights);
+            this.lotsQuantities.put(entry.getKey(), Math.round(entry.getValue().getWeight()*qtyOfPrizes/sumOfWeights));
         }
         int sum = 0, i = 0;
         while (i < lots.size()-1) {
-            sum += lotsQuantities[i];
+            sum += lotsQuantities.get(i);
             i++;
         }
-        lotsQuantities[i] = qtyOfPrizes - sum;
+        lotsQuantities.put(i, qtyOfPrizes - sum);
     }
     /**
      * Метод создает приоритетную очередь призов, где приоритет определяется случайным образом на основе функции Math.random()
      */
-    public void createQueueOfPrizes () {
-        int[] tempArray = new int[lotsQuantities.length];
-        System.arraycopy(lotsQuantities, 0, tempArray, 0, lotsQuantities.length);
-        int indexOfToy;
+    private PriorityQueue<Toy> createQueueOfPrizes() {
+        PriorityQueue<Toy> result = new PriorityQueue<>();
+        int[] tempArray = new int[qtyOfPrizes];
+        int currentLotQty;
         for (int i = 0; i < qtyOfPrizes; i++) {
-            indexOfToy = (int)(Math.random()*qtyOfPrizes);
-            if (tempArray[indexOfToy] != 0) {
-                this.prizes.add(lots.get(indexOfToy).getItem().getToy());
-                tempArray[indexOfToy]--;
-            } else i--;
+            try {
+                Integer lotID = Math.toIntExact(Math.round(Math.random()*(lots.size()-1)+1));
+                currentLotQty = lotsQuantities.get(lotID);
+                if (currentLotQty > 0) {
+                    lotsQuantities.put(lotID, currentLotQty-1);
+                    result.add(store.getToysAssortment().get(lotID).getToy());
+                }
+            } catch (ArithmeticException e) {
+                throw new WrongInputDataException("ЗАДАННОЕ ЧИСЛО ПРИЗОВ ВЫХОДИТ ЗА ПРЕДЕЛЫ ДОПУСТИМОГО (БОЛЕЕ 2,147,483,647");
+            }
         }
+        return result;
     }
 
     /**
@@ -140,6 +171,12 @@ public class Lottery {
     public Toy getPrize (){
         if (this.prizes.isEmpty()) return null;
         else return this.prizes.poll();
+    }
+    public void printLots () {
+        System.out.println("\u001B[34m"+String.format("%-10s%-12s%-10s", "ID ЛОТА", "ID ТОВАРА", "ВЕС")+"\u001B[0m");
+        for (Map.Entry<Integer, Lot> entry : lots.entrySet()) {
+            System.out.println(String.format("%-10d%-12d%-10d", entry.getKey(), entry.getValue().getItem(), entry.getValue().getWeight()));
+        }
     }
 
     /**

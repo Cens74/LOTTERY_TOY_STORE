@@ -3,13 +3,18 @@ package model;
 import java.util.Objects;
 
 public class Lot {
-//    private int lotNumber;
-    private NomenclatureItem item;
+//    private int lotID;
+    private int nomenclatureID;
     private int weight;
-
-    public Lot(int lotNumber, NomenclatureItem item, int weight) {
+    public Lot() {
 //        this.lotNumber = lotNumber;
-        this.item = item;
+        this.nomenclatureID = 0;
+        this.weight = 0;
+    }
+
+    public Lot(int id, int weight) {
+//        this.lotNumber = lotNumber;
+        this.nomenclatureID = id;
         this.weight = weight;
     }
 
@@ -21,12 +26,12 @@ public class Lot {
 //        this.lotNumber = lotNumber;
 //    }
 
-    public NomenclatureItem getItem() {
-        return item;
+    public int getItem() {
+        return nomenclatureID;
     }
 
-    public void setItem(NomenclatureItem item) {
-        this.item = item;
+    public void setItem(int id) {
+        this.nomenclatureID = id;
     }
 
     public int getWeight() {
@@ -39,9 +44,7 @@ public class Lot {
 
     @Override
     public String toString() {
-        return String.format("ЛОТ № %-5d: %50s",
-//                lotNumber,
-                item.getToy().toString());
+        return String.format("ЛОТ: ID ТОВАРА = %-6d, ВЕС = %-4d", nomenclatureID, weight);
     }
 //    @Override
 //    public int hashCode() {
