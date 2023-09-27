@@ -18,7 +18,7 @@ public class Viewer {
     private final String ANSI_WHITE = "\u001B[37m";
 
     public void infoMessage(String prompt) {
-        System.out.println(String.format("%s%s%s%s",ANSI_YELLOW, prompt, ANSI_RESET, "\n"));
+        System.out.println(String.format("%s%s%s",ANSI_YELLOW, prompt, ANSI_RESET));
     }
     public void promptMessage(String prompt) {
         System.out.print(String.format("%s%s%s%s",ANSI_PURPLE, prompt, "===> ", ANSI_RESET));

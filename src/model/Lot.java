@@ -26,8 +26,9 @@ public class Lot {
 //        this.lotNumber = lotNumber;
 //    }
 
-    public int getItem() {
-        return nomenclatureID;
+    public int getNomenclatureID() {
+
+        return this.nomenclatureID;
     }
 
     public void setItem(int id) {

@@ -9,7 +9,7 @@ import java.util.Random;
 
 import static java.lang.System.currentTimeMillis;
 
-public class Toy {
+public class Toy implements Comparable<Toy> {
 //    private static Integer lastUsedToyID = 0;
     private int toyID;
     private String toyType;
@@ -112,5 +112,12 @@ public class Toy {
     }
     public String toString() {
         return String.format("ИГРУШКА %-5d: <Тип = %-20s, Название = %-50s>", toyID, toyType, toyName);
+    }
+
+    @Override
+    public int compareTo(Toy o) {
+        if (this.hashCode() < o.hashCode()) return 1;
+        else if (this.hashCode() > o.hashCode()) return -1;
+        return 0;
     }
 }

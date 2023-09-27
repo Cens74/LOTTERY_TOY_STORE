@@ -28,28 +28,48 @@ public class Lottery {
             weightsSum += entry.getValue().getWeight();
             lotsQuantities.put(entry.getKey(), 0);
         }
+        /******************************************************************/
+        System.out.println(String.format("СУММА ВСЕХ ВЕСОВ РАВНА %d", weightsSum));
+        System.out.println(String.format("ОБЩЕЕ ЧИСЛО ПРИЗОВ РАВНО %d", qtyOfPrizes));
+        /*****************************************************************/
         int i = 1;
         int newQty;
         int summedQty = 0;
-        Lot lot = new Lot();
+        Lot lot;
         for (i = 1; i < lots.size(); i++) {
+            lot = new Lot();
             lot = lots.get(i);
-            newQty = (int)Math.round(lot.getWeight()/weightsSum*qtyOfPrizes);
+            /*******************************************************/
+            System.out.print((store.getToyByNomenclatureID(lot.getItem())).hashCode());
+            System.out.print(String.format("; ВЕС = %d", lot.getWeight()));
+            System.out.print(String.format("; ВЕС/СУММУ ВЕСОВ = %-5.2f", ((double)lot.getWeight())/weightsSum));
+            /*****************************************************/
+            newQty = (int)Math.round(((double)lot.getWeight())/weightsSum*qtyOfPrizes);
+            System.out.printf(" Quantity = %-5d\n", newQty);
 //            if (newQty == 0) ...
             if (newQty > store.getNomenclatureQtyInStore(lot.getItem())) {
                 throw new WrongInputDataException(String.format("В магазине недостаточно игрушек: \n"+
-                        " %s\n" +"для организации лотереи по Вашим параметрам",
-                        store.getToyByNomenclatureID(lot.getItem()).toString()));
+                        " %s\n" +"для организации лотереи по Вашим параметрам\n"+"Требуется минимум %d.\n",
+                        store.getToyByNomenclatureID(lot.getItem()).toString(), newQty));
             };
             summedQty += newQty;
             lotsQuantities.put(i, newQty);
+            System.out.println(String.format("Лот %d: %s", i, lotsQuantities.get(i)));
         }
+        lot = new Lot();
+        lot = lots.get(i);
+        /*******************************************************/
+        System.out.println(store.getToyByNomenclatureID(lot.getItem()).hashCode());
+        /*****************************************************/
         lotsQuantities.put(i, qtyOfPrizes-summedQty);
+        System.out.println(lotsQuantities);
         this.prizes = createQueueOfPrizes();
 //        createQueueOfPrizes();
         int num = 1;
         for (Toy elem : prizes) {
-            System.out.println(num + elem.toString());
+            elem.hashCode();
+            System.out.println(num + " приз:  " + elem.toString());
+            num++;
         }
     }
 
@@ -152,10 +172,15 @@ public class Lottery {
         for (int i = 0; i < qtyOfPrizes; i++) {
             try {
                 Integer lotID = Math.toIntExact(Math.round(Math.random()*(lots.size()-1)+1));
+                System.out.printf("Выбран лот номер %d... ", lotID);
                 currentLotQty = lotsQuantities.get(lotID);
+                System.out.printf("Этих игрушек осталось %d штук.\n", currentLotQty);
                 if (currentLotQty > 0) {
+                    tempArray[i] = lots.get(lotID).getNomenclatureID();
+                    /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
                     lotsQuantities.put(lotID, currentLotQty-1);
                     result.add(store.getToysAssortment().get(lotID).getToy());
+                    System.out.printf("... добавили лот № %d в очередь на выдачу!\n", lotID);
                 }
             } catch (ArithmeticException e) {
                 throw new WrongInputDataException("ЗАДАННОЕ ЧИСЛО ПРИЗОВ ВЫХОДИТ ЗА ПРЕДЕЛЫ ДОПУСТИМОГО (БОЛЕЕ 2,147,483,647");
