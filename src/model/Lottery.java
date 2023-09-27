@@ -177,6 +177,7 @@ public class Lottery {
                 System.out.printf("Этих игрушек осталось %d штук.\n", currentLotQty);
                 if (currentLotQty > 0) {
                     tempArray[i] = lots.get(lotID).getNomenclatureID();
+                    /* в массив temArray заносим NomenclatureID товаров, которые в результате случайного отбора попали в список призов */
                     /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
                     lotsQuantities.put(lotID, currentLotQty-1);
                     result.add(store.getToysAssortment().get(lotID).getToy());
