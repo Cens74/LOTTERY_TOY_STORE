@@ -4,12 +4,13 @@ import exceptions.WrongInputDataException;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.Random;
 
 import static java.lang.System.currentTimeMillis;
 
-public class Toy implements Comparable<Toy> {
+public class Toy implements Comparable<Toy>, Comparator<Toy> {
 //    private static Integer lastUsedToyID = 0;
     private int toyID;
     private String toyType;
@@ -86,6 +87,16 @@ public class Toy implements Comparable<Toy> {
     public void setToyName (String toyType) {
         this.toyName = toyName;
     }
+
+    @Override
+    public int compare(Toy o1, Toy o2) {
+        int o1Hash = o1.hashCode();
+        int o2Hash = o2.hashCode();
+        if (o1Hash < o2Hash) return -1;
+        else if (o1Hash > o2Hash) return 1;
+        return 0;
+    }
+
     // Игрушки считаются равными, если у них одинаковые ID
     @Override
     public boolean equals(Object o) throws WrongInputDataException {
@@ -103,12 +114,12 @@ public class Toy implements Comparable<Toy> {
     }
     @Override
     public int hashCode() {
-        int result = 19;
-        final int hashBase = 31;
+        int result = 31;
+        final int hashBase = 19;
 
         result = result* hashBase + toyType.hashCode();
         result = result* hashBase + toyName.hashCode();
-        return result>>>3;
+        return (int) (result*(Math.round(Math.random()*19))>>>3);
     }
     public String toString() {
         return String.format("ИГРУШКА %-5d: <Тип = %-20s, Название = %-50s>", toyID, toyType, toyName);
@@ -116,8 +127,13 @@ public class Toy implements Comparable<Toy> {
 
     @Override
     public int compareTo(Toy o) {
-        if (this.hashCode() < o.hashCode()) return 1;
-        else if (this.hashCode() > o.hashCode()) return -1;
         return 0;
     }
+
+//    @Override
+//    public int compareTo(Toy o) {
+//        if (this.hashCode() < o.hashCode()) return 1;
+//        else if (this.hashCode() > o.hashCode()) return -1;
+//        return 0;
+//    }
 }
