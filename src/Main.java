@@ -15,10 +15,10 @@ public class Main {
         try {
             controller.run();
         } catch (WrongPathToFileException e) {
-            System.out.println("ФАТАЛЬНАЯ ОШИБКА. ПРОГРАММА ЗАВЕРШАЕТ РАБОТУ. ");
+            System.out.println(e.getMessage());
             return;
         } catch (IOException e) {
-            System.out.println("ФАТАЛЬНАЯ ОШИБКА. ПРОГРАММА ЗАВЕРШАЕТ РАБОТУ. ");
+            System.out.println("ОШИБКА ВВОДА-ВЫВОДА. ПРОГРАММА ЗАВЕРШАЕТ РАБОТУ. ");
             return;
         }
     }

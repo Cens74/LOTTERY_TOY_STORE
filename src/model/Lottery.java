@@ -68,12 +68,12 @@ public class Lottery {
         System.out.println(lotsQuantities);
         this.prizes = createQueueOfPrizes();
 //        createQueueOfPrizes();
-        int num = 1;
-        for (Toy elem : prizes) {
-            elem.hashCode();
-            System.out.println(num + " приз:  " + elem.toString());
-            num++;
-        }
+//        int num = 1;
+//        for (i = 0; i < qtyOfPrizes; i++) {
+//            System.out.println(num + " приз:  " + prizes.poll().toString());
+//            num++;
+//        }
+//        System.out.println(String.format("Queue size = %d", prizes.size()));
     }
 
 //    public Lottery(int partQty) {
@@ -175,7 +175,14 @@ public class Lottery {
 //                return 0;
 //            }
 //        }
-        PriorityQueue<Prize> result = new PriorityQueue<>();
+        Comparator<Prize> prizesComparator = new Comparator<Prize>() {
+            @Override
+            public int compare(Prize o1, Prize o2) {
+                return o1.priority-o2.priority;
+            }
+        };
+        PriorityQueue<Prize> result = new PriorityQueue<>(qtyOfPrizes, prizesComparator);
+        System.out.println(String.format("qtyOfPrizes = %d", qtyOfPrizes));
         int[] tempArray = new int[qtyOfPrizes];
         int[] markArray = new int[qtyOfPrizes];
 
@@ -185,9 +192,9 @@ public class Lottery {
 
             for (Map.Entry<Integer, Integer> entry : lotsQuantities.entrySet()) {
                 for (int i = 1; i <= entry.getValue(); i++) {
-                    int j = (int)Math.round(Math.random()*qtyOfPrizes);
+                    int j = (int)Math.round(Math.random()*qtyOfPrizes-0.5);
                     while (markArray[j] == 1) {
-                        j = (int)Math.round(Math.random()*qtyOfPrizes-0.49);
+                        j = (int)Math.round(Math.random()*qtyOfPrizes-0.5);
                     }
                     tempArray[j] = lots.get(entry.getKey()).getNomenclatureID();
                     markArray[j] = 1;
@@ -211,17 +218,18 @@ public class Lottery {
 //                throw new WrongInputDataException("ЗАДАННОЕ ЧИСЛО ПРИЗОВ ВЫХОДИТ ЗА ПРЕДЕЛЫ ДОПУСТИМОГО (БОЛЕЕ 2,147,483,647");
 //            }
             System.out.println(Arrays.toString(tempArray));
+            System.out.println(Arrays.toString(markArray));
 
             System.out.println("**************************************************************************\n"+
                 "Помещаем соответствующие игрушки в Priority Queue\n"+
-                "**************************************************************************");
+                "*****************************************************************************************");
             for (int i = 0; i < qtyOfPrizes; i++) {
-                Prize nextPrize = new Prize(1, store.getToyByNomenclatureID(tempArray[i]), qtyOfPrizes);
-                System.out.println(nextPrize);
+                Prize nextPrize = new Prize(i, store.getToyByNomenclatureID(tempArray[i]), qtyOfPrizes);
+//                System.out.println(nextPrize);
                 result.add(nextPrize);
             }
 //        }
-        System.out.println(result);
+        System.out.println(String.format("В очереди призов %d игрушек.", result.size()));
         return result;
     }
 //    private Comparator<Toy> toyComparator = new Comparator<Toy>() {

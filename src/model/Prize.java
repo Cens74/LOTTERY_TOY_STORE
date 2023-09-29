@@ -23,7 +23,7 @@ public class Prize implements Comparable<Prize>, Comparator<Prize> {
 
     @Override
     public String toString() {
-        return String.format("Приз № %d (приоритет %d): %s", this.prizeID, this.priority, this.toy);
+        return String.format("(приоритет %d): %s", this.priority, this.toy);
     }
 
     @Override

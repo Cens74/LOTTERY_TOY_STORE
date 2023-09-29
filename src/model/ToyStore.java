@@ -7,6 +7,7 @@ import exceptions.WrongPathToFileException;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.SQLOutput;
 import java.util.*;
 
 /**
@@ -56,7 +57,7 @@ public class ToyStore {
                 while (temp != null) {
                     System.out.println(temp);
                     if (temp == null) break;
-                    nomenclatureFields = temp.split(" ");
+                    nomenclatureFields = temp.split(";");
                     System.out.println("\u001B[36m"+ "nomenclatureFields = "+Arrays.toString(nomenclatureFields)+ "\u001B[0m");
                     lastID++;
                     System.out.printf("lastID = %d\n", lastID);
@@ -68,9 +69,9 @@ public class ToyStore {
                     System.out.println("\u001B[32m"+temp+"\u001B[0m");
                 }
             } catch (FileNotFoundException e) {
-            throw new WrongPathToFileException("НЕКОРРЕКТНЫЙ ПУТЬ К ФАЙЛУ С НОМЕНКЛАТУРОЙ МАГАЗИНА");
+            throw new WrongPathToFileException(String.format("НЕТ ДОСТУПА К ФАЙЛУ С ИМЕНЕМ %s!!!", fullFileName));
         }
-        System.out.println(String.format("В магазине %d разновидностей игрушек.", lastID));
+
     }
     /**
      * Функция возвращает 0, если игрушка отсутствует в номенклатурном справочнике,
@@ -188,7 +189,12 @@ public class ToyStore {
      * Метод вывода в консоль всей номенклатуры магазина игрушек
      */
     public void print() {
-        System.out.println("\n\u001B[33m"+"АССОРТИМЕНТ МАГАЗИНА ИГРУШЕК: "+"\u001B[0m");
+        System.out.println(String.format("\n\u001B[34m"+"В МАГАЗИНЕ %d ВИДОВ ИГРУШЕК. ОЗНАКОМЬТЕСЬ С АССОРТИМЕНТОМ: ", lastID));
+        System.out.println(String.format("%9s", "ID ТОВАРА")+"        "+String.format("%-18s", "ID ИГРУШКИ"+
+                "      "+String.format("%-33s", "ТИП ИГРУШКИ")+"       "+String.format("%-50s", "НАЗВАНИЕ ИГРУШКИ")+
+                "       "+String.format("%-10s", "КОЛИЧЕСТВО")+"       "+String.format("%-5s", "ЦЕНА")+"\u001B[0m"));
+        System.out.println("------------------------------------------------------------------------------------------"+
+                "--------------------------------------------------------------------------------------------------");
         for (NomenclatureItem item: toysAssortment) {
             if (item!=null) System.out.println(item.toString());
         }

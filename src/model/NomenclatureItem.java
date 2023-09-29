@@ -98,6 +98,6 @@ public class NomenclatureItem {
 
     @Override
     public String toString() {
-        return String.format("Товарная единица: ID = %-10d, %-100s, q-ty = %-10d, price = %-5.2f", itemID, toy.toString(), quantity, price);
+        return String.format("Товар: ID = %3d, %-103s, q-ty = %4d, price = %-5.2f", itemID, toy.toString(), quantity, price);
     }
 }

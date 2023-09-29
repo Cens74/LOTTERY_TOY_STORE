@@ -45,12 +45,12 @@ public class Toy implements Comparable<Toy>, Comparator<Toy> {
         } catch (NumberFormatException e)  {
             throw new WrongInputDataException("НЕВЕРНЫЙ ФОРМАТ ДАННЫХ В СТРОКЕ, ОПИСЫВАЮЩЕЙ ИГРУШКУ.");
         }
-        if (fields[1].matches("^[а-яА-Я., <>\\-()]*$") && fields[1].endsWith(">") && fields[1].startsWith("<")) {
+        if (fields[1].matches("^[а-яА-Я., <>\\-_()]*$")) {
             this.toyType = fields[1];
         } else throw new WrongInputDataException("НЕВЕРНЫЙ ФОРМАТ ДАННЫХ В СТРОКЕ, ОПИСЫВАЮЩЕЙ ИГРУШКУ:\n ТИП - "+
                                                 "ЭТО СТРОКА БЕЗ ИЗ РУССКИХ БУКВ, ПРОБЕЛОВ, ТОЧЕК, ЗАПЯТЫХ И (ВОЗМОЖНО) ДЕФИСОВ," +
                                                 "ЗАКЛЮЧЕННАЯ В УГЛОВЫЕ СКОБКИ");
-        if (fields[2].matches("^[а-яА-Я0-9\\-\",.<>()]*$")&& fields[2].startsWith("<") && fields[2].endsWith(">")) {
+        if (fields[2].matches("^[а-яА-Я0-9\\-\",. _<>()]*$")) {
             this.toyName = fields[2];
         } else throw new WrongInputDataException("НЕВЕРНЫЙ ФОРМАТ ДАННЫХ В СТРОКЕ, ОПИСЫВАЮЩЕЙ ИГРУШКУ:\n"+
                                 "НАЗВАНИЕ - ЭТО СТРОКА ИЗ РУССКИХ БУКВ, ЦИФР, ПРОБЕЛОВ, ТОЧЕК, ЗАПЯТЫХ И (ВОЗМОЖНО) ДЕФИСОВ В УГЛОВЫХ СКОБКАХ");
@@ -122,7 +122,7 @@ public class Toy implements Comparable<Toy>, Comparator<Toy> {
         return (int) (result*(Math.round(Math.random()*19))>>>3);
     }
     public String toString() {
-        return String.format("ИГРУШКА %-5d: <Тип = %-20s, Название = %-50s>", toyID, toyType, toyName);
+        return String.format("ИГРУШКА %-5d: Тип = %-32s, Название = %-47s", toyID, toyType, toyName);
     }
 
     @Override

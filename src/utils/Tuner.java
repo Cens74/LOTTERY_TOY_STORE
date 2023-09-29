@@ -17,10 +17,10 @@ public class Tuner {
     public static final String ANSI_WHITE = "\u001B[37m";
 
     public boolean isTypeOfToy (String str) {
-        return str.matches("^[а-яА-Я., <>\\-()_]*$") && str.endsWith(">") && str.startsWith("<");
+        return str.matches("^[а-яА-Я., <>\\-()_]*$");
     }
     public boolean isNameOfToy (String str) {
-        return str.matches("^[а-яА-Яa-zA-Z0-9\\-\",.<>()_]*$")&& str.startsWith("<") && str.endsWith(">");
+        return str.matches("^[а-яА-Яa-zA-Z0-9\\- \",.<>()_]*$");
     }
     public boolean isID (String str) {
         return str.matches("^[0-9]*$")&& Integer.parseInt(str) > 0;
