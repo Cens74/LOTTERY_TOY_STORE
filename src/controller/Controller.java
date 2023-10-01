@@ -63,8 +63,14 @@ public class Controller {
         store.print();
         int numberOfParticipants = viewer.getPositiveIntegerFromConsole("\nСКОЛЬКО ДЕТЕЙ БУДЕТ УЧАСТВОВАТЬ В РОЗЫГРЫШЕ? ", tuner.QTY_OF_ATTEMPTS);
         viewer.infoMessage(String.format("ОК. В НАШЕЙ ЛОТЕРЕЕ БУДЕТ %d УЧАСТНИКА(ОВ).", numberOfParticipants));
-        int qtyOfPrizes = viewer.getPositiveIntegerFromConsole("СКОЛЬКО ЛОТОВ БУДЕТ РАЗЫГРЫВАТЬСЯ?", tuner.QTY_OF_ATTEMPTS);
-        viewer.infoMessage(String.format("ОК. В НАШЕЙ ЛОТЕРЕЕ БУДЕТ РАЗЫГРАНО %d ЛОТА(ОВ).", qtyOfPrizes));
+        int qtyOfPrizes = 0, iter = 0;
+        while (qtyOfPrizes < numberOfParticipants && iter < tuner.QTY_OF_ATTEMPTS) {
+            qtyOfPrizes = viewer.getPositiveIntegerFromConsole("СКОЛЬКО ПРИЗОВ БУДЕМ РАЗЫГРЫВАТЬ?" +
+                    " КОЛИЧЕСТВО ПРИЗОВ ДОЛЖНО БЫТЬ БОЛЬШЕ ЧИСЛА УЧАСТНИКОВ. Попробуйте еще раз.", tuner.QTY_OF_ATTEMPTS);
+            iter++;
+        }
+        if (iter == tuner.QTY_OF_ATTEMPTS) throw new WrongInputDataException("НЕ ПОЛУЧИТСЯ ПРОВЕСТИ ЛОТЕРЕЮ С ТАКИМИ ИСХОДНЫМИ ДАННЫМИ. ИЗВИНИТЕ ((");
+        viewer.infoMessage(String.format("ОК. В НАШЕЙ ЛОТЕРЕЕ БУДЕТ РАЗЫГРАНО %d ПРИЗА(ОВ).", qtyOfPrizes));
         viewer.infoMessage(String.format("\n Теперь необходимо определить список лотов, которые будут принимать участие в розыгрыше,"));
         viewer.infoMessage(String.format("и для каждого из них указать вес, характеризующий относительную частоту появления этого товара."));
         String answer = viewer.getUserInput("Вы будете вводить лоты с клавиатуры или укажете имя файла, из которого следует брать данные? \n"+
