@@ -15,6 +15,12 @@ public class Tuner {
     public static final String ANSI_PURPLE = "\u001B[35m";
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_WHITE = "\u001B[37m";
+    public final String DEFAULT_PATH = ".";
+    public final String DEFAULT_TOY_STORE_FILE_NAME = "toyStore.txt";
+    public final String LOTTERY_RESULT_FILE_NAME = "lotteryResult.txt";
+    public final String DEFAULT_LOTS_FILE_NAME = "lots.txt";
+    public final String STANDARD_QUIT_STRING = "q";
+    public final int QTY_OF_ATTEMPTS = 3;
 
     public boolean isTypeOfToy (String str) {
         return str.matches("^[а-яА-Я., <>\\-()_]*$");
@@ -101,7 +107,7 @@ public class Tuner {
         String tempString = str.strip();
         String[] fields;
         fields = tempString.split(" ");
-        if (fields.length != 2) throw new WrongDataFormatException("НЕВЕРНЫЙ ФОРМАТ ЛОТА!!! ОШИБКА ВВОДА ДАННЫХ. ПРОГРАММА ЗАВЕРШАЕТ РАБОТУ.");
+        if (fields.length != 2) throw new WrongDataFormatException("НЕВЕРНЫЙ ФОРМАТ ЗАДАНИЯ ЛОТА!!!");
         result.setItem(parseID(fields[0]));
         result.setWeight(parseID(fields[1]));
         return result;

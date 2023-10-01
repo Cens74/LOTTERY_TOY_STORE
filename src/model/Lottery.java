@@ -235,7 +235,7 @@ public class Lottery {
                 result.add(nextPrize);
             }
 //        }
-        System.out.println(String.format("В очереди призов %d игрушек.", result.size()));
+        System.out.println(String.format("В ЛОТЕРЕЕ БУДЕТ РАЗЫГРАНО %d ИГРУШЕК.", result.size()));
         return result;
     }
 //    private Comparator<Toy> toyComparator = new Comparator<Toy>() {
