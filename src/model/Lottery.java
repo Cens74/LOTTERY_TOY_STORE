@@ -15,6 +15,11 @@ public class Lottery {
     private Map<Integer,Lot> lots;                 // лоты, участвующие в лотерее: <ID лота> <Лот>
     private Map<Integer, Integer> lotsQuantities;  // количества лотов, требуемые для розыгрыша: <ID лота> <Кол-во>
     private PriorityQueue<Prize> prizes;             // очередь призов для выдачи участникам
+
+    public PriorityQueue<Prize> getPrizes() {
+        return prizes;
+    }
+
     public Lottery(ToyStore store, Map<Integer,Lot> lots, int participantsQty, int prizesQty) {
         this.store = store;
         this.lots = lots;
@@ -48,8 +53,9 @@ public class Lottery {
             System.out.printf(" Quantity = %-5d\n", newQty);
 //            if (newQty == 0) ...
             if (newQty > store.getNomenclatureQtyInStore(lot.getNomenclatureID())) {
-                throw new WrongInputDataException(String.format("В магазине недостаточно игрушек: \n"+
+                throw new WrongInputDataException(String.format("В магазине недостаточно игрушек: \n"+ "ID# %d, " +
                         " %s\n" +"для организации лотереи по Вашим параметрам\n"+"Требуется минимум %d.\n",
+                        lot.getNomenclatureID(),
                         store.getToyByNomenclatureID(lot.getNomenclatureID()).toString(), newQty));
             };
             summedQty += newQty;

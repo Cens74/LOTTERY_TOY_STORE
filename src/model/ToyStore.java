@@ -20,7 +20,7 @@ import java.util.*;
 public class ToyStore {
     private int lastID; // самый старший использованный идентификатор
     private final List<NomenclatureItem> toysAssortment; // список товарной номенклатуры
-    private Queue<Integer> freedIDQueue; // очередь из освободившихся ID (товар выведен из номенклатуры)
+    private PriorityQueue<Integer> freedIDQueue; // очередь из освободившихся ID (товар выведен из номенклатуры)
 
     public ToyStore() {
         this.lastID = 0;
@@ -69,7 +69,7 @@ public class ToyStore {
                     System.out.println("\u001B[32m"+temp+"\u001B[0m");
                 }
             } catch (FileNotFoundException e) {
-            throw new WrongPathToFileException(String.format("НЕТ ДОСТУПА К ФАЙЛУ С ИМЕНЕМ %s!!!", fullFileName));
+            throw new WrongPathToFileException(String.format("ФАЙЛ %s НЕ НАЙДЕН!!!", fullFileName));
         }
 
     }

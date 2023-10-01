@@ -1,23 +1,18 @@
 package controller;
 
+import exceptions.ErrorWhileWritingToFileException;
 import exceptions.WrongInputDataException;
 import exceptions.WrongPathToFileException;
-import model.Lot;
-import model.Lottery;
-import model.Toy;
-import model.ToyStore;
+import model.*;
 import view.Viewer;
 import utils.Tuner;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class Controller {
     private final Viewer viewer;
@@ -87,6 +82,7 @@ public class Controller {
         fileNameRequest = "ВВЕДИТЕ НАЗВАНИЕ .TXT-ФАЙЛА (БЕЗ КАВЫЧЕК, МОЖНО БЕЗ РАСШИРЕНИЯ), В КОТОРЫЙ СЛЕДУЕТ ЗАПИСАТЬ РЕЗУЛЬТАТЫ РОЗЫГРЫША.\n" +
                 "ЕСЛИ НАЖМЕТЕ ENTER, БУДЕТ СЧИТАТЬСЯ, ЧТО ЭТО ФАЙЛ lotteryResult.txt";
         String resultFileName = getFileNameFromConsole (pathRequest, fileNameRequest, DEFAULT_PATH, LOTTERY_RESULT_FILE_NAME);
+        writeResultsToFile(resultFileName, ourLottery.getPrizes());
         System.out.println(ourLottery.getPrize());
         System.out.println(ourLottery.getPrize());
         System.out.println(ourLottery.getPrize());
@@ -144,6 +140,18 @@ public class Controller {
             fullFileNameAsString = String.format("%s\\%s", pathAsString, fileName);
             System.out.printf("Полное имя файла = %s\n", fullFileNameAsString);
             return fullFileNameAsString;
+        }
+    }
+    private void writeResultsToFile (String fileName, PriorityQueue<Prize> results) throws ErrorWhileWritingToFileException {
+        File fileWithResults = new File(fileName);
+        Prize nextPrize = results.poll();
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileWithResults, false  ));) {
+            while (nextPrize != null) {
+                bw.write(nextPrize.toString()+"\n");
+                nextPrize = results.poll();
+            }
+        } catch (IOException e) {
+            throw new ErrorWhileWritingToFileException(String.format("НЕВОЗМОЖНО ПРОИЗВЕСТИ ЗАПИСЬ РЕЗУЛЬТАТОВ В ФАЙЛ %s", fileName));
         }
     }
 
