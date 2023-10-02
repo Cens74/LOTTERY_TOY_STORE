@@ -61,19 +61,21 @@ public class Controller {
         ToyStore store = new ToyStore(Path.of(new File(storeFileName).getCanonicalPath()));
 //        System.out.println("\n\u001B[34m"+"ОЗНАКОМЬТЕСЬ С АССОРТИМЕНТОМ МАГАЗИНА ИГРУШЕК: "+"\u001B[0m");
         store.print();
-        int numberOfParticipants = viewer.getPositiveIntegerFromConsole("\nСКОЛЬКО ДЕТЕЙ БУДЕТ УЧАСТВОВАТЬ В РОЗЫГРЫШЕ? ", tuner.QTY_OF_ATTEMPTS);
+        int numberOfParticipants = viewer.getPositiveIntegerFromConsole("\nСКОЛЬКО ДЕТЕЙ БУДЕТ УЧАСТВОВАТЬ"+"" +
+                " В РОЗЫГРЫШЕ? ", tuner.QTY_OF_ATTEMPTS);
         viewer.infoMessage(String.format("ОК. В НАШЕЙ ЛОТЕРЕЕ БУДЕТ %d УЧАСТНИКА(ОВ).", numberOfParticipants));
-        int qtyOfPrizes = 0, iter = 0;
-        while (qtyOfPrizes < numberOfParticipants && iter < tuner.QTY_OF_ATTEMPTS) {
-            qtyOfPrizes = viewer.getPositiveIntegerFromConsole("СКОЛЬКО ПРИЗОВ БУДЕМ РАЗЫГРЫВАТЬ?" +
-                    " КОЛИЧЕСТВО ПРИЗОВ ДОЛЖНО БЫТЬ БОЛЬШЕ ЧИСЛА УЧАСТНИКОВ. Попробуйте еще раз.", tuner.QTY_OF_ATTEMPTS);
-            iter++;
-        }
-        if (iter == tuner.QTY_OF_ATTEMPTS) throw new WrongInputDataException("НЕ ПОЛУЧИТСЯ ПРОВЕСТИ ЛОТЕРЕЮ С ТАКИМИ ИСХОДНЫМИ ДАННЫМИ. ИЗВИНИТЕ ((");
+        int iter = 0;
+        int qtyOfPrizes = viewer.getPositiveIntegerFromConsole("СКОЛЬКО ПРИЗОВ БУДЕМ РАЗЫГРЫВАТЬ?" +
+                " КОЛИЧЕСТВО ПРИЗОВ НЕ МОЖЕТ БЫТЬ МЕНЬШЕ ЧИСЛА УЧАСТНИКОВ", tuner.QTY_OF_ATTEMPTS);
+        if (qtyOfPrizes < numberOfParticipants) throw new WrongInputDataException("НЕ ПОЛУЧИТСЯ ПРОВЕСТИ ЛОТЕРЕЮ С"+
+                " ТАКИМИ ИСХОДНЫМИ ДАННЫМИ. ИЗВИНИТЕ ((");
         viewer.infoMessage(String.format("ОК. В НАШЕЙ ЛОТЕРЕЕ БУДЕТ РАЗЫГРАНО %d ПРИЗА(ОВ).", qtyOfPrizes));
-        viewer.infoMessage(String.format("\n Теперь необходимо определить список лотов, которые будут принимать участие в розыгрыше,"));
-        viewer.infoMessage(String.format("и для каждого из них указать вес, характеризующий относительную частоту появления этого товара."));
-        String answer = viewer.getUserInput("Вы будете вводить лоты с клавиатуры или укажете имя файла, из которого следует брать данные? \n"+
+        viewer.infoMessage(String.format("\n Теперь необходимо определить список лотов, которые будут принимать"+
+                " участие в розыгрыше,"));
+        viewer.infoMessage(String.format("и для каждого из них указать вес, характеризующий относительную частоту "+
+                "выпадения этого лота."));
+        String answer = viewer.getUserInput("Вы будете вводить лоты с клавиатуры или укажете имя файла, "+
+                "из которого следует брать данные? \n"+
                 "Введите цифру, соответствующую вашему выбору: \n1 - c клавиатуры,\n2 - из файла\n");
         Map<Integer, Lot> lotsMap;
         switch (answer) {
@@ -90,7 +92,8 @@ public class Controller {
                         "ЕСЛИ НАЖМЕТЕ ENTER, БУДЕТ СЧИТАТЬСЯ, ЧТО ЭТО ТЕКУЩИЙ РАБОЧИЙ КАТАЛОГ ";
                 fileNameRequest = "ВВЕДИТЕ НАЗВАНИЕ .TXT-ФАЙЛА (БЕЗ КАВЫЧЕК, МОЖНО БЕЗ РАСШИРЕНИЯ) СО СПИСКОМ ЛОТОВ.\n" +
                         "ЕСЛИ НАЖМЕТЕ ENTER, БУДЕТ СЧИТАТЬСЯ, ЧТО ЭТО ФАЙЛ lots.txt";
-                String lotsFileName = viewer.getFileNameFromConsole (pathRequest, fileNameRequest, tuner.DEFAULT_PATH, tuner.DEFAULT_LOTS_FILE_NAME);;
+                String lotsFileName = viewer.getFileNameFromConsole (pathRequest, fileNameRequest, tuner.DEFAULT_PATH,
+                        tuner.DEFAULT_LOTS_FILE_NAME);;
                 lotsMap = viewer.getLotsForLotteryFromFile(tuner, lotsFileName);
                 break;
             default:
@@ -109,13 +112,15 @@ public class Controller {
             case "2":
                 pathRequest = "ВВЕДИТЕ ПУТЬ К КАТАЛОГУ, В КОТОРЫЙ СЛЕДУЕТ ПОМЕСТИТЬ .TXT-ФАЙЛ С РЕЗУЛЬТАТАМИ РОЗЫГРЫША.\n" +
                         "ЕСЛИ НАЖМЕТЕ ENTER, БУДЕТ СЧИТАТЬСЯ, ЧТО ЭТО ТЕКУЩИЙ РАБОЧИЙ КАТАЛОГ ";
-                fileNameRequest = "ВВЕДИТЕ НАЗВАНИЕ .TXT-ФАЙЛА (БЕЗ КАВЫЧЕК, МОЖНО БЕЗ РАСШИРЕНИЯ), В КОТОРЫЙ СЛЕДУЕТ ЗАПИСАТЬ РЕЗУЛЬТАТЫ.\n" +
+                fileNameRequest = "ВВЕДИТЕ НАЗВАНИЕ .TXT-ФАЙЛА (БЕЗ КАВЫЧЕК, МОЖНО БЕЗ РАСШИРЕНИЯ), В КОТОРЫЙ СЛЕДУЕТ "+
+                        "ЗАПИСАТЬ РЕЗУЛЬТАТЫ.\n" +
                         "ЕСЛИ НАЖМЕТЕ ENTER, БУДЕТ СЧИТАТЬСЯ, ЧТО ЭТО ФАЙЛ lotteryResult.txt";
-                String resultFileName = viewer.getFileNameFromConsole (pathRequest, fileNameRequest, tuner.DEFAULT_PATH, tuner.LOTTERY_RESULT_FILE_NAME);
+                String resultFileName = viewer.getFileNameFromConsole (pathRequest, fileNameRequest, tuner.DEFAULT_PATH,
+                        tuner.LOTTERY_RESULT_FILE_NAME);
                 writeResultsToFile(resultFileName, ourLottery.getPrizes(), numberOfParticipants);
                 break;
             default:
-                throw new WrongInputDataException("Unexpected value: " + answer);
+                throw new WrongInputDataException("UNEXPECTED VALUE: " + answer);
         }
     }
 

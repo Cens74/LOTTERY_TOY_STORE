@@ -18,9 +18,9 @@ import java.util.*;
  *
  */
 public class ToyStore {
-    private int lastID; // самый старший использованный идентификатор
+    private int lastID; // самый старший использованный идентификатор товара
     private final List<NomenclatureItem> toysAssortment; // список товарной номенклатуры
-    private PriorityQueue<Integer> freedIDQueue; // очередь из освободившихся ID (товар выведен из номенклатуры)
+    private PriorityQueue<Integer> freedIDQueue; // очередь свободных ID, мЕньших lastID (товар выведен из номенклатуры)
 
     public ToyStore() {
         this.lastID = 0;
@@ -29,6 +29,7 @@ public class ToyStore {
     }
 
     public List<NomenclatureItem> getToysAssortment() {
+
         return toysAssortment;
     }
 
