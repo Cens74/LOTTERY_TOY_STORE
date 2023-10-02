@@ -35,29 +35,16 @@ public class NomenclatureItem {
      * @param nomenclatureFields
      */
     public NomenclatureItem (int itemID, String[] nomenclatureFields) throws WrongDataFormatException {
-        /********************************/
         Tuner tuner = new Tuner();
-        /*********************************/
         this.itemID = itemID;
-        int toyID, qty;
-        double price;
-        System.out.println(Arrays.toString(nomenclatureFields));
-        System.out.println(nomenclatureFields.length);
-        /*******************************************/
+        int toyID;
         if (nomenclatureFields.length != 5) throw new WrongDataFormatException("НЕКОРРЕКТНОЕ ЧИСЛО ПОЛЕЙ В СТРОКЕ, " +
                 "ОПИСЫВАЮЩЕЙ НОМЕНКЛАТУРНУЮ ЕДИНИЦУ. ");
         if (tuner.isID(nomenclatureFields[0])) {
             toyID = Integer.parseInt(nomenclatureFields[0]);
-            System.out.printf("toyID = %d\n", toyID);
-            System.out.printf("toyType = %s\n", nomenclatureFields[1]);
-            System.out.printf("toyName = %s\n", nomenclatureFields[2]);
             if (tuner.isTypeOfToy(nomenclatureFields[1]) && tuner.isNameOfToy(nomenclatureFields[2])) {
                 System.out.println("Поля содержат тип и название игрушки, все в порядке. ");
                 this.toy = new Toy(toyID, nomenclatureFields[1], nomenclatureFields[2]);
-//                this.toy = new Toy(1, "<Машинка>", "<Экскаватор_мет.>");
-                System.out.println(this.toy);
-                System.out.printf("new Toy == null ? %s\n", this.toy == null);
-                System.out.printf("New Toy = %s\n", (this.toy).toString());
                 this.quantity = tuner.parseQty(nomenclatureFields[3]);
                 this.price = tuner.parsePrice(nomenclatureFields[4]);
             }
@@ -68,16 +55,8 @@ public class NomenclatureItem {
         return itemID;
     }
 
-    public void setItemID(int itemID) {
-        this.itemID = itemID;
-    }
-
     public Toy getToy() {
         return toy;
-    }
-
-    public void setToy(Toy toy) {
-        this.toy = toy;
     }
 
     public int getQuantity() {
@@ -85,6 +64,7 @@ public class NomenclatureItem {
     }
 
     public void setQuantity(int quantity) {
+
         this.quantity = quantity;
     }
 

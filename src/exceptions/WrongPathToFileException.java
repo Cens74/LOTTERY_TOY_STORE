@@ -1,13 +1,15 @@
 package exceptions;
 
+import utils.Tuner;
+
 import java.io.IOException;
 
 public class WrongPathToFileException extends IOException {
     private static final String commonMessage = "WRONG INPUT DATA: \n";
     public WrongPathToFileException(String message) {
-        super(commonMessage + message);
+        super(Tuner.ANSI_RED+commonMessage + "\n" + message+Tuner.ANSI_RESET);
     }
     public WrongPathToFileException() {
-        super(commonMessage);
+        super(Tuner.ANSI_RED+commonMessage+Tuner.ANSI_RESET);
     }
 }

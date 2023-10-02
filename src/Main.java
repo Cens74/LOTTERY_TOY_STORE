@@ -18,7 +18,7 @@ public class Main {
             System.out.println(e.getMessage());
             return;
         } catch (IOException e) {
-            System.out.println("ПРОИЗОШЛА ОШИБКА ВВОДА-ВЫВОДА. ПРОГРАММА ЗАВЕРШАЕТ РАБОТУ. ");
+            System.out.println("К СОЖАЛЕНИЮ, ПРОИЗОШЛА ОШИБКА ВВОДА-ВЫВОДА. \nПРОГРАММА ЗАВЕРШАЕТ РАБОТУ. ");
             return;
         }
     }

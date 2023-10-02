@@ -31,9 +31,6 @@ public class Viewer {
     public void infoMessage(String prompt) {
         System.out.println(String.format("%s%s%s",ANSI_YELLOW, prompt, ANSI_RESET));
     }
-    public void promptMessage(String prompt) {
-        System.out.print(String.format("%s%s%s%s",ANSI_PURPLE, prompt, "===> ", ANSI_RESET));
-    }
     public String getUserInput (String prompt) {
         System.out.print(String.format("%s%s%s", ANSI_PURPLE, prompt, "===> ", ANSI_RESET));
         Scanner in = new Scanner(System.in);
@@ -51,13 +48,13 @@ public class Viewer {
             try {
                 pathAsString = new File(defaultPath).getCanonicalPath();
             } catch (IOException e) {
-                throw new WrongPathToFileException("НЕКОРРЕКТНЫЙ ПУТЬ К ФАЙЛУ С НОМЕНКЛАТУРОЙ МАГАЗИНА");
+                throw new WrongPathToFileException("НЕКОРРЕКТНЫЙ ПУТЬ К ФАЙЛУ!!!");
             }
         }  else {
             try {
                 pathAsString = new File(pathAsString).getCanonicalPath();
             } catch (IOException e) {
-                throw new WrongPathToFileException("НЕКОРРЕКТНЫЙ ПУТЬ К ФАЙЛУ С НОМЕНКЛАТУРОЙ МАГАЗИНА");
+                throw new WrongPathToFileException("НЕКОРРЕКТНЫЙ ПУТЬ К ФАЙЛУ!!!");
             }
         }
         Path path = Paths.get(pathAsString);
@@ -128,11 +125,13 @@ public class Viewer {
         return result;
     }
     public void showResults(PriorityQueue<Prize> prizes, int numberOfParticipants) {
-        System.out.println("СПИСОК ПРИЗОВ В ПОРЯДКЕ ИХ ВЫПАДЕНИЯ: ");
+        System.out.printf("В ЛОТЕРЕЕ ПРИНИМАЛО УЧАСТИЕ %d ДЕТЕЙ.\n", numberOfParticipants);
+        System.out.printf("БЫЛО РАЗЫГРАНО %d ПРИЗОВ.\n", prizes.size());
+        System.out.println("ВОТ СПИСОК ПРИЗОВ, КОТОРЫЕ ДОСТАЛИСЬ УЧАСТНИКАМ: ");
         Prize nextPrize;
         for (int count = 1; count <= numberOfParticipants; count++){
             nextPrize = prizes.poll();
-            System.out.println(nextPrize);
+            System.out.println(String.format("%d. ", count) + nextPrize);
         }
     }
 

@@ -2,7 +2,6 @@ package utils;
 
 import exceptions.WrongDataFormatException;
 import exceptions.WrongInputDataException;
-import exceptions.WrongPathToFileException;
 import model.Lot;
 
 public class Tuner {
@@ -17,6 +16,7 @@ public class Tuner {
     public static final String ANSI_WHITE = "\u001B[37m";
     public final String DEFAULT_PATH = ".";
     public final String DEFAULT_TOY_STORE_FILE_NAME = "toyStore.txt";
+    public final String DEFAULT_NOMENCLATURE_FILE_NAME = "nomenclature.txt";
     public final String LOTTERY_RESULT_FILE_NAME = "lotteryResult.txt";
     public final String DEFAULT_LOTS_FILE_NAME = "lots.txt";
     public final String STANDARD_QUIT_STRING = "q";
@@ -49,11 +49,8 @@ public class Tuner {
                     return (double) result;
                 }
             }
-//            System.out.println(String.format("ind = %d", ind));
             subStr = helpStr.substring(0, ind);
-//            System.out.println(subStr);
             roubles = Integer.parseInt(subStr);
-//            System.out.println();
             subStr = helpStr.substring(ind + 1);
             if (subStr != null && subStr.length() > 0) {
                 kopecks = Integer.parseInt(subStr);
@@ -68,17 +65,6 @@ public class Tuner {
         }
         return result;
     }
-    public int parseWeight (String str) throws WrongDataFormatException, WrongInputDataException {
-        int result = 0;
-        if (str.matches("^[0-9]*$")) {
-            result = Integer.parseInt(str);
-            if (result > 0) return result;
-            else throw new WrongInputDataException("ВЕС ДОЛЖЕН БЫТЬ ЦЕЛЫМ И НЕНУЛЕВЫМ");
-        } else {
-            // введенная строка содержит символы, которых не может быть в целом числе
-            throw new WrongDataFormatException(String.format("НЕВЕРНЫЙ ФОРМАТ ДАННЫХ (ВЕС НОМЕНЛАТУРНОЙ ЕДИНИЦЫ)!!!"));
-        }
-    }
     public int parseQty (String str) throws WrongDataFormatException, WrongInputDataException {
         int result = 0;
         if (str.matches("^[0-9]*$")) {
@@ -87,7 +73,7 @@ public class Tuner {
             else throw new WrongInputDataException("КОЛИЧЕСТВО НЕ МОЖЕТ БЫТЬ НУЛЕВЫМ");
         } else {
             // введенная строка содержит символы, которых не может быть в целом числе
-            throw new WrongDataFormatException(String.format("НЕВЕРНЫЙ ФОРМАТ ДАННЫХ (ID НОМЕНЛАТУРНОЙ ЕДИНИЦЫ)!!!"));
+            throw new WrongDataFormatException("НЕВЕРНЫЙ ФОРМАТ ДАННЫХ (ID НОМЕНЛАТУРНОЙ ЕДИНИЦЫ)!!!");
         }
     }
     public int parseID (String str) throws WrongDataFormatException {
@@ -98,7 +84,7 @@ public class Tuner {
             else throw new WrongInputDataException("ИДЕНТИФИКАТОР ДОЛЖЕН БЫТЬ ЦЕЛЫМ И НЕНУЛЕВЫМ");
         } else {
             // введенная строка содержит символы, которых не может быть в целом числе
-            throw new WrongDataFormatException(String.format("НЕВЕРНЫЙ ФОРМАТ ДАННЫХ (ID НОМЕНЛАТУРНОЙ ЕДИНИЦЫ)!!!"));
+            throw new WrongDataFormatException("НЕВЕРНЫЙ ФОРМАТ ДАННЫХ (ID НОМЕНЛАТУРНОЙ ЕДИНИЦЫ)!!!");
         }
     }
 

@@ -2,16 +2,9 @@ package model;
 
 import exceptions.WrongInputDataException;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Comparator;
-import java.util.Objects;
-import java.util.Random;
-
-import static java.lang.System.currentTimeMillis;
 
 public class Toy implements Comparable<Toy>, Comparator<Toy> {
-//    private static Integer lastUsedToyID = 0;
     private int toyID;
     private String toyType;
     private String toyName;
@@ -56,16 +49,6 @@ public class Toy implements Comparable<Toy>, Comparator<Toy> {
                                 "НАЗВАНИЕ - ЭТО СТРОКА ИЗ РУССКИХ БУКВ, ЦИФР, ПРОБЕЛОВ, ТОЧЕК, ЗАПЯТЫХ И (ВОЗМОЖНО) ДЕФИСОВ В УГЛОВЫХ СКОБКАХ");
     }
 
-//    private int assignUniqueNumber () {
-//        final int countBase = 331;
-//        Random random = new Random();
-//        int result =
-//        int result = toyID*countBase;
-//        result = (int) (result*countBase + currentTimeMillis()%Integer.MAX_VALUE);
-//        result = (result*countBase + toyName.hashCode())>>>1;
-//        return result;
-//    }
-
     public String getToyType() {
         return toyType;
     }
@@ -96,8 +79,6 @@ public class Toy implements Comparable<Toy>, Comparator<Toy> {
         else if (o1Hash > o2Hash) return 1;
         return 0;
     }
-
-    // Игрушки считаются равными, если у них одинаковые ID
     @Override
     public boolean equals(Object o) throws WrongInputDataException {
         if (this == o) return true;
@@ -116,7 +97,6 @@ public class Toy implements Comparable<Toy>, Comparator<Toy> {
     public int hashCode() {
         int result = 31;
         final int hashBase = 19;
-
         result = result* hashBase + toyType.hashCode();
         result = result* hashBase + toyName.hashCode();
         return (int) (result*(Math.round(Math.random()*19))>>>3);
@@ -124,16 +104,9 @@ public class Toy implements Comparable<Toy>, Comparator<Toy> {
     public String toString() {
         return String.format("ИГРУШКА %-5d: Тип = %-32s, Название = %-47s", toyID, toyType, toyName);
     }
-
     @Override
     public int compareTo(Toy o) {
         return 0;
     }
 
-//    @Override
-//    public int compareTo(Toy o) {
-//        if (this.hashCode() < o.hashCode()) return 1;
-//        else if (this.hashCode() > o.hashCode()) return -1;
-//        return 0;
-//    }
 }

@@ -8,25 +8,13 @@ import view.Viewer;
 import utils.Tuner;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 public class Controller {
     private final Viewer viewer;
     private final Tuner tuner;
 
-//    private final Lottery lottery;
-//    private final ToyStore store;
-//    private final Tuner tuner;
-
-    public Controller(Viewer viewer, Tuner tuner, ToyStore store) {
-        this.viewer = viewer;
-//       this.lottery = lottery;
-//       this.store = store;
-        this.tuner = tuner;
-    }
     public Controller(Viewer viewer, Tuner tuner) {
         this.tuner = tuner;
         this.viewer = viewer;
@@ -40,31 +28,37 @@ public class Controller {
                 "ЕСЛИ НАЖМЕТЕ ENTER, БУДЕТ СЧИТАТЬСЯ, ЧТО ЭТО ТЕКУЩИЙ РАБОЧИЙ КАТАЛОГ ";
         String fileNameRequest = String.format("ВВЕДИТЕ НАЗВАНИЕ .TXT-ФАЙЛА (БЕЗ КАВЫЧЕК, МОЖНО БЕЗ РАСШИРЕНИЯ) С НОМЕНКЛАТУРОЙ МАГАЗИНА\n" +
                 "ЕСЛИ НАЖМЕТЕ ENTER, БУДЕТ СЧИТАТЬСЯ, ЧТО ЭТО ФАЙЛ %s", tuner.DEFAULT_TOY_STORE_FILE_NAME);
-        String storeFileName = viewer.getFileNameFromConsole (pathRequest, fileNameRequest, tuner.DEFAULT_PATH, tuner.DEFAULT_TOY_STORE_FILE_NAME);
-//        Toy toy = new Toy("1 Машинка Вольво-615");
-//        System.out.println(toy.toString());
-//        viewer.promptMessage(message);
-//        Scanner scanner = new Scanner(System.in);
-//        int i;
-//        String input;
-//        for (i = 0; i < QTY_OF_ATTEMPTS; i++) {
-//            input = viewer.getUserInput(message);
-//            try {
-//                numberOfParticipants = Integer.parseInt(input);
-//                i = QTY_OF_ATTEMPTS+1;
-//            } catch (NumberFormatException e) {
-//                if (i < QTY_OF_ATTEMPTS-1) System.out.printf("%d-я попытка: \n", i+2);
-//            }
-//        }
-//        if (i == QTY_OF_ATTEMPTS) throw new WrongInputDataException("ОШИБКА ВВОДА. ПРОГРАММА ЗАВЕРШАЕТ СВОЮ РАБОТУ...");
-
+        String storeFileName = viewer.getFileNameFromConsole (pathRequest, fileNameRequest, tuner.DEFAULT_PATH,
+                tuner.DEFAULT_TOY_STORE_FILE_NAME);
         ToyStore store = new ToyStore(Path.of(new File(storeFileName).getCanonicalPath()));
-//        System.out.println("\n\u001B[34m"+"ОЗНАКОМЬТЕСЬ С АССОРТИМЕНТОМ МАГАЗИНА ИГРУШЕК: "+"\u001B[0m");
-        store.print();
+        String answer = viewer.getUserInput("ХОТИТЕ ОЗНАКОМИТЬСЯ С НОМЕНКЛАТУРОЙ МАГАЗИНА ИГРУШЕК? \n"+
+                "Введите цифру, соответствующую вашему выбору: \n1 - ХОЧУ,\n2 - НЕТ\n");
+        if (answer.equals("1")) {
+            String choice = viewer.getUserInput("ВЫ ХОТИТЕ ПОЛУЧИТЬ СПИСОК НОМЕНКЛАТУРЫ В КОНСОЛЬ ИЛИ В ФАЙЛ? \n"+
+                    "Введите цифру, соответствующую вашему выбору: \n1 - В КОНСОЛЬ,\n2 - В ФАЙЛ\n");
+            switch (choice) {
+                case "1":
+                    store.printToConsole();
+                    break;
+                case "2":
+                    pathRequest = "ВВЕДИТЕ ПУТЬ К КАТАЛОГУ, В КОТОРЫЙ СЛЕДУЕТ ПОМЕСТИТЬ .TXT-ФАЙЛ С НОМЕНКЛАТУРОЙ.\n" +
+                            "ЕСЛИ НАЖМЕТЕ ENTER, БУДЕТ СЧИТАТЬСЯ, ЧТО ЭТО ТЕКУЩИЙ РАБОЧИЙ КАТАЛОГ ";
+                    fileNameRequest = "ВВЕДИТЕ НАЗВАНИЕ .TXT-ФАЙЛА (БЕЗ КАВЫЧЕК, МОЖНО БЕЗ РАСШИРЕНИЯ).\n" +
+                            "ЕСЛИ НАЖМЕТЕ ENTER, БУДЕТ СЧИТАТЬСЯ, ЧТО ЭТО ФАЙЛ nomenclature.txt";
+                    String nomenclatureFileName = viewer.getFileNameFromConsole(pathRequest, fileNameRequest,
+                            tuner.DEFAULT_PATH, tuner.DEFAULT_NOMENCLATURE_FILE_NAME);
+                    store.printToFile(nomenclatureFileName);
+                    break;
+                default:
+                    throw new WrongInputDataException("Unexpected value: " + answer);
+            }
+        } else if (!answer.equals("2")) {
+            throw new WrongInputDataException("Unexpected value: " + answer);
+        }
+
         int numberOfParticipants = viewer.getPositiveIntegerFromConsole("\nСКОЛЬКО ДЕТЕЙ БУДЕТ УЧАСТВОВАТЬ"+"" +
                 " В РОЗЫГРЫШЕ? ", tuner.QTY_OF_ATTEMPTS);
         viewer.infoMessage(String.format("ОК. В НАШЕЙ ЛОТЕРЕЕ БУДЕТ %d УЧАСТНИКА(ОВ).", numberOfParticipants));
-        int iter = 0;
         int qtyOfPrizes = viewer.getPositiveIntegerFromConsole("СКОЛЬКО ПРИЗОВ БУДЕМ РАЗЫГРЫВАТЬ?" +
                 " КОЛИЧЕСТВО ПРИЗОВ НЕ МОЖЕТ БЫТЬ МЕНЬШЕ ЧИСЛА УЧАСТНИКОВ", tuner.QTY_OF_ATTEMPTS);
         if (qtyOfPrizes < numberOfParticipants) throw new WrongInputDataException("НЕ ПОЛУЧИТСЯ ПРОВЕСТИ ЛОТЕРЕЮ С"+
@@ -74,7 +68,7 @@ public class Controller {
                 " участие в розыгрыше,"));
         viewer.infoMessage(String.format("и для каждого из них указать вес, характеризующий относительную частоту "+
                 "выпадения этого лота."));
-        String answer = viewer.getUserInput("Вы будете вводить лоты с клавиатуры или укажете имя файла, "+
+        answer = viewer.getUserInput("Вы будете вводить лоты с клавиатуры или укажете имя файла, "+
                 "из которого следует брать данные? \n"+
                 "Введите цифру, соответствующую вашему выбору: \n1 - c клавиатуры,\n2 - из файла\n");
         Map<Integer, Lot> lotsMap;
@@ -100,8 +94,6 @@ public class Controller {
                 throw new WrongInputDataException("Unexpected value: " + answer);
         }
         viewer.infoMessage("\nВсе необходимые данные для проведения розыгрыша получены. Запускаем лотерею...\n");
-//        String quitString = "q";
-//        Map<Integer, Lot> lotsMap = getLotsForLotteryFromConsole(STANDARD_QUIT_STRING);
         Lottery ourLottery = new Lottery (store, lotsMap, numberOfParticipants, qtyOfPrizes);
         answer = viewer.getUserInput("Куда вывести результаты? "+
                 "Введите цифру, соответствующую вашему выбору: \n1 - в консоль,\n2 - в файл\n");
@@ -115,81 +107,32 @@ public class Controller {
                 fileNameRequest = "ВВЕДИТЕ НАЗВАНИЕ .TXT-ФАЙЛА (БЕЗ КАВЫЧЕК, МОЖНО БЕЗ РАСШИРЕНИЯ), В КОТОРЫЙ СЛЕДУЕТ "+
                         "ЗАПИСАТЬ РЕЗУЛЬТАТЫ.\n" +
                         "ЕСЛИ НАЖМЕТЕ ENTER, БУДЕТ СЧИТАТЬСЯ, ЧТО ЭТО ФАЙЛ lotteryResult.txt";
-                String resultFileName = viewer.getFileNameFromConsole (pathRequest, fileNameRequest, tuner.DEFAULT_PATH,
-                        tuner.LOTTERY_RESULT_FILE_NAME);
-                writeResultsToFile(resultFileName, ourLottery.getPrizes(), numberOfParticipants);
+                try {
+                    String resultFileName = viewer.getFileNameFromConsole(pathRequest, fileNameRequest, tuner.DEFAULT_PATH,
+                            tuner.LOTTERY_RESULT_FILE_NAME);
+                    writeResultsToFile(resultFileName, ourLottery.getPrizes(), numberOfParticipants);
+                } catch (WrongPathToFileException e) {
+                    throw new WrongPathToFileException();
+                }
                 break;
             default:
                 throw new WrongInputDataException("UNEXPECTED VALUE: " + answer);
         }
     }
-
-//    private Map<Integer, Lot> getLotsForLotteryFromConsole (Tuner tuner, String quitString) {
-//        Map<Integer, Lot> result = new HashMap<>();
-//        int lotID = 1;
-//        String userInput;
-//        String message = String.format("Лот № %-2d: (введите ID товара и вес через пробел) ", lotID);
-//        userInput = viewer.getUserInput(message);
-//        while (userInput.compareToIgnoreCase(quitString) != 0) {
-//            result.put(lotID, this.tuner.parseLot(userInput));
-//            lotID++;
-//            userInput = viewer.getUserInput(String.format("Лот № %-2d: (введите ID товара и вес через пробел) ", lotID));
-//        }
-////        System.out.println("РЕЗУЛЬТИРУЮЩИЙ CПИСОК ЛОТОВ: \n");
-//        return result;
-//    }
-//    private String getFileNameFromConsole (String pathRequest, String fileNameRequest,
-//                                           String defaultPath, String defaultFileName) throws WrongPathToFileException {
-//        String pathAsString = viewer.getUserInput(pathRequest);
-//        String fullFileNameAsString;
-//        if (pathAsString == "") {
-//            try {
-//                pathAsString = new File(defaultPath).getCanonicalPath();
-//            } catch (IOException e) {
-//                throw new WrongPathToFileException("НЕКОРРЕКТНЫЙ ПУТЬ К ФАЙЛУ С НОМЕНКЛАТУРОЙ МАГАЗИНА");
-//            }
-//        }  else {
-//            try {
-//                pathAsString = new File(pathAsString).getCanonicalPath();
-//            } catch (IOException e) {
-//                throw new WrongPathToFileException("НЕКОРРЕКТНЫЙ ПУТЬ К ФАЙЛУ С НОМЕНКЛАТУРОЙ МАГАЗИНА");
-//            }
-//        }
-//        Path path = Paths.get(pathAsString);
-//        if (!Files.exists(path)) throw new WrongPathToFileException("НЕКОРРЕКТНЫЙ ПУТЬ К ФАЙЛУ С НОМЕНКЛАТУРОЙ МАГАЗИНА!!!");
-//        else {
-//            System.out.println("Path = " + path.toString());
-//            String fileName = viewer.getUserInput(fileNameRequest);
-//            if (fileName != "") {
-//                fileName = fileName.strip();
-//                if (!fileName.endsWith(".txt")) fileName = fileName.concat(".txt");
-//            } else {
-//                fileName = defaultFileName;
-//            }
-//            fullFileNameAsString = String.format("%s\\%s", pathAsString, fileName);
-//            System.out.printf("Полное имя файла = %s\n", fullFileNameAsString);
-//            return fullFileNameAsString;
-//        }
-//    }
     private void writeResultsToFile (String fileName, PriorityQueue<Prize> results, int ParticipantsQty) throws ErrorWhileWritingToFileException {
         File fileWithResults = new File(fileName);
         Prize nextPrize;
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileWithResults, false  ));) {
+            bw.write(String.format("В ЛОТЕРЕЕ ПРИНИМАЛО УЧАСТИЕ %d ДЕТЕЙ.\n", ParticipantsQty));
+            bw.write(String.format("БЫЛО РАЗЫГРАНО %d ПРИЗОВ.\n", results.size()));
+            bw.write("ВОТ СПИСОК ПРИЗОВ, КОТОРЫЕ ДОСТАЛИСЬ УЧАСТНИКАМ: \n\n");
             for (int count = 1; count <= ParticipantsQty; count++) {
                 nextPrize = results.poll();
-                bw.write(nextPrize.toString()+"\n");
+                bw.write(String.format("%d. ", count)+nextPrize.toString()+"\n");
             }
         } catch (IOException e) {
             throw new ErrorWhileWritingToFileException(String.format("НЕВОЗМОЖНО ПРОИЗВЕСТИ ЗАПИСЬ РЕЗУЛЬТАТОВ В ФАЙЛ %s", fileName));
         }
     }
-
-//        String fullFileName = viewer.getUserInput(message);
-//        String fileNAme =
-//        try {
-//            toyStoreFileName = (File)scanner.nextLine());
-//        } catch (IOException e) {
-//
-//        }
 }
 

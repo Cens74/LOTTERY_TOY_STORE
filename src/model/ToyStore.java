@@ -1,6 +1,7 @@
 package model;
 
 import exceptions.ErrorWhileReadingTheFileException;
+import exceptions.ErrorWhileWritingToFileException;
 import exceptions.WrongDataFormatException;
 import exceptions.WrongPathToFileException;
 
@@ -18,7 +19,7 @@ import java.util.*;
  *
  */
 public class ToyStore {
-    private int lastID; // самый старший использованный идентификатор товара
+    private int lastID; // самый старший задействованный идентификатор товара
     private final List<NomenclatureItem> toysAssortment; // список товарной номенклатуры
     private PriorityQueue<Integer> freedIDQueue; // очередь свободных ID, мЕньших lastID (товар выведен из номенклатуры)
 
@@ -26,11 +27,6 @@ public class ToyStore {
         this.lastID = 0;
         this.toysAssortment = new ArrayList<>();
         this.freedIDQueue = new PriorityQueue<>();
-    }
-
-    public List<NomenclatureItem> getToysAssortment() {
-
-        return toysAssortment;
     }
 
     /**
@@ -56,18 +52,12 @@ public class ToyStore {
                 NomenclatureItem newItem;
                 temp = in.readLine();
                 while (temp != null) {
-                    System.out.println(temp);
                     if (temp == null) break;
                     nomenclatureFields = temp.split(";");
-                    System.out.println("\u001B[36m"+ "nomenclatureFields = "+Arrays.toString(nomenclatureFields)+ "\u001B[0m");
                     lastID++;
-                    System.out.printf("lastID = %d\n", lastID);
                     newItem = new NomenclatureItem(lastID, nomenclatureFields);
-                    System.out.println(String.format("New Nomenclature item # %d", lastID)+"\u001B[31m" + newItem.toString() + "\u001B[0m");
                     toysAssortment.add(newItem);
-                    System.out.println(Arrays.toString(toysAssortment.toArray()));
                     temp = in.readLine();
-                    System.out.println("\u001B[32m"+temp+"\u001B[0m");
                 }
             } catch (FileNotFoundException e) {
             throw new WrongPathToFileException(String.format("ФАЙЛ %s НЕ НАЙДЕН!!!", fullFileName));
@@ -90,10 +80,6 @@ public class ToyStore {
             }
         }
         return result;
-    }
-    public int getToyQtyInStore (Toy toy) {
-        int toyInd = this.getNomenclatureID(toy);
-        return toysAssortment.get(toyInd).getQuantity();
     }
     public int getNomenclatureQtyInStore (int nomID) {
         int result = 0;
@@ -173,7 +159,6 @@ public class ToyStore {
             }
         }
     }
-    /***************************************************/
     public int addToyToAssortment (Toy toy) {
         Integer itemID = 0;
         NomenclatureItem item = new NomenclatureItem(itemID, toy);
@@ -189,7 +174,7 @@ public class ToyStore {
     /**
      * Метод вывода в консоль всей номенклатуры магазина игрушек
      */
-    public void print() {
+    public void printToConsole() {
         System.out.println(String.format("\n\u001B[34m"+"В МАГАЗИНЕ %d ВИДОВ ИГРУШЕК. ОЗНАКОМЬТЕСЬ С АССОРТИМЕНТОМ: ", lastID));
         System.out.println(String.format("%9s", "ID ТОВАРА")+"        "+String.format("%-18s", "ID ИГРУШКИ"+
                 "      "+String.format("%-33s", "ТИП ИГРУШКИ")+"       "+String.format("%-50s", "НАЗВАНИЕ ИГРУШКИ")+
@@ -198,6 +183,26 @@ public class ToyStore {
                 "--------------------------------------------------------------------------------------------------");
         for (NomenclatureItem item: toysAssortment) {
             if (item!=null) System.out.println(item.toString());
+        }
+    }
+    /**
+     * Метод вывода в файл всей номенклатуры магазина игрушек
+     */
+    public void printToFile(String fileName) throws ErrorWhileWritingToFileException {
+        File fileWithResults = new File(fileName);
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileWithResults, false  ))) {
+            bw.write(String.format("В МАГАЗИНЕ %d ВИДОВ ИГРУШЕК: \n", lastID));
+            bw.write(String.format("%9s", "ID ТОВАРА")+"        "+String.format("%-18s", "ID ИГРУШКИ"+
+                    "      "+String.format("%-33s", "ТИП ИГРУШКИ")+"       "+String.format("%-50s", "НАЗВАНИЕ ИГРУШКИ")+
+                    "       "+String.format("%-10s", "КОЛИЧЕСТВО")+"       "+String.format("%-5s", "ЦЕНА")+"\u001B[0m\n"));
+            bw.write("------------------------------------------------------------------------------------------"+
+                    "--------------------------------------------------------------------------------------------------\n\n");
+            for (NomenclatureItem item: toysAssortment) {
+                if (item!=null) bw.write(item.toString()+"\n");
+            }
+        } catch (IOException e) {
+            throw new ErrorWhileWritingToFileException(String.format("НЕВОЗМОЖНО ПРОИЗВЕСТИ ЗАПИСЬ В ФАЙЛ "+
+                    "С НАЗВАНИЕМ %s", fileName));
         }
     }
 }
